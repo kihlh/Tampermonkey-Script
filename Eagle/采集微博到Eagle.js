@@ -17,7 +17,7 @@
 (function () {
     "use strict";
     // 没有需要采集的界面则或者用户未同意使用协议则退出
-    if (GM_getValue("OFF") || !!document.querySelector("#plc_main .WB_frame_c,#v6_pl_content_homefeed,.WB_feed_detail,#homeWrap")) return;
+    if (GM_getValue("OFF") || !!document.querySelector("#plc_main .WB_frame_c,#v6_pl_content_homefeed,.WB_feed_detail")) return;
     console.log("开始注入");
     /**
      * 一些全局快速调用的方法
