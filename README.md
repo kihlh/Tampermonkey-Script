@@ -15,7 +15,7 @@
 
 
 
-**Eagle交互脚本.js**[查看]()
+**Eagle交互脚本.js**[查看](https://github.com/kihlh/Tampermonkey-Script/blob/main/Eagle/Eagle%E4%BA%A4%E4%BA%92%E8%84%9A%E6%9C%AC.js)
 
 
 适用于浏览器环境的Eagle交互脚本
@@ -24,7 +24,7 @@
 
 
 
-**生意参谋访客下载.js**[查看]()
+**生意参谋访客下载.js**[查看](https://github.com/kihlh/Tampermonkey-Script/blob/main/Eagle/%E7%94%9F%E6%84%8F%E5%8F%82%E8%B0%8B%E8%AE%BF%E5%AE%A2%E4%B8%8B%E8%BD%BD.js)
 
 
 适用于生意参谋访客页面的数据采集的脚本
