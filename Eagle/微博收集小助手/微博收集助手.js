@@ -18,7 +18,6 @@
 // @date                11/28/2021
 // @license             BSD
 // ==/UserScript==
-
 /**
     脚本声明(statement):
 脚本由TS(TypeScript)编写因此会自动做低版本兼容处理，因此有些地方会像被压缩过，如果需要源码建议到我的github中获取完整的TS(未编译)代码 源代码采用BSD协议
@@ -27,27 +26,13 @@ Script use“TS(TypeScript)“to write It will be automatically compiled and ava
 It can be modified and used at will, but the derivative version has nothing to do with the original author
 
 */
-
-
-
 // 延时等待页面加载
 setTimeout((function () {
-
-
     // 所有需要查找的元素会在这里获取
-    const Main: {
-        IF: Array<string>
-        Isobsolete: string
-        Main: string
-        Card: string
-        button: string
-        buttonMain: string
-        buttonElement: Element | string
-        AddSwitch:string
-    } = {
+    const Main = {
         // 运行条件
         IF: [
-            /*旧版以后会移除（*/"#plc_main", "#v6_pl_content_homefeed", ".WB_frame_c .WB_media_wrap",/*）旧版以后会移除*/
+            /*旧版以后会移除（*/ "#plc_main", "#v6_pl_content_homefeed", ".WB_frame_c .WB_media_wrap",
             "#homeWrap"
         ],
         Isobsolete: "#v6_pl_content_homefeed .WB_feed_detail.clearfix .WB_detail .WB_info",
@@ -94,144 +79,146 @@ setTimeout((function () {
              <!---->
          </div>
        </div>
-       `,         /**
-         * 按钮元素
-         */
+       `,
         buttonElement: "div",
-      /*卡片中含有这些元素才执行*/  
-    AddSwitch:".woo-picture-main,video,.woo-picture-square",
-    }
+        /*卡片中含有这些元素才执行*/
+        AddSwitch: ".woo-picture-main,video,.woo-picture-square",
+    };
     /*-----------------------------------旧版主题兼容--------------------------------------------*/
     if (document.querySelector(Main.Isobsolete)) {
-
         return;
     }
     const HM = {
-       OFF:false,
+        OFF: false,
         UserAgreement() {
-	  // @ts-ignore 获取是否已经同意同意后不再弹出
+            // @ts-ignore 获取是否已经同意同意后不再弹出
             if (GM_getValue("UserAgreement")) {
                 return true;
-            } else {
+            }
+            else {
                 if (!confirm(`\n                用户协议：\n            ----我同意仅作为查看,学习图片用途----，\n                 并且我将在稍后移除图片，\n                 并且在本网页关闭后我将移除图片，\n\n                 点击取消之后请帮我关闭此功能\n                 并且请不再提问我这个问题，\n            `)) {
-          // @ts-ignore 用户不同意使用退出脚本            
-	GM_setValue("OFF", true);
-	this.OFF=true;
-                } else {
-	  // @ts-ignore 用户同意 不再询问
+                    // @ts-ignore 用户不同意使用退出脚本            
+                    GM_setValue("OFF", true);
+                    this.OFF = true;
+                }
+                else {
+                    // @ts-ignore 用户同意 不再询问
                     GM_setValue("UserAgreement", true);
                     return true;
                 }
             }
         },
-    };;
+    };
+    ;
     /*-----------------------------------旧版主题兼容--------------------------------------------*/
     /**判断脚本是否运行*/
     let $IS_funStart = {
         IF: {
             // @ts-ignore
-            UserOFF: !GM_getValue("OFF"),//用户没关闭脚本
-            is: ((): boolean => {
+            UserOFF: !GM_getValue("OFF"),
+            is: (() => {
                 for (const Elname of Main.IF) {
-                    if (document.querySelector(Elname)) return true;
+                    if (document.querySelector(Elname))
+                        return true;
                 }
-                return false
+                return false;
             })()
         },
-        StartMun: 2,//满足两项则运行
+        StartMun: 2,
         HM__IF() {
             let IFMun = 0;
             for (const key in this.IF) {
                 if (Object.hasOwnProperty.call(this.IF, key)) {
                     const element = this.IF[key];
-                    if (element) IFMun++;
+                    if (element)
+                        IFMun++;
                     console.log(IFMun);
-
-                    if (IFMun >= $IS_funStart.StartMun) return true;
+                    if (IFMun >= $IS_funStart.StartMun)
+                        return true;
                 }
             }
             return false;
         }
-    }; if (!$IS_funStart.HM__IF()) return;// 没有需要采集的界面则或者用户未同意使用协议则退出
+    };
+    if (!$IS_funStart.HM__IF())
+        return; // 没有需要采集的界面则或者用户未同意使用协议则退出
     /***********************会被多数函数调用的模块*************************** */
     /**
      * Call类型
-     * @param a 
-     * @returns 
+     * @param a
+     * @returns
      */
-    function CallType(a: any): string {
-        return Object.prototype.toString.call(a)
+    function CallType(a) {
+        return Object.prototype.toString.call(a);
     }
     /**
      *  _00 _02...
-     * @param num 
-     * @param n 
-     * @returns 
+     * @param num
+     * @param n
+     * @returns
      */
-    function MIU_NUM(num: number, n: number): string {
+    function MIU_NUM(num, n) {
         return (Array(n).join("0") + num).slice(-n);
     }
     /**
      * 去重
-     * @param List 
-     * @returns 
+     * @param List
+     * @returns
      */
-    function RemoveRepeat(List): Array<any> {
+    function RemoveRepeat(List) {
         const NewARRAY = [];
         const ToSet = new Set();
-        for (const Data of List) ToSet.add(Data);
-        for (const iterator of ToSet) NewARRAY.push(iterator);
+        for (const Data of List)
+            ToSet.add(Data);
+        for (const iterator of ToSet)
+            NewARRAY.push(iterator);
         return NewARRAY;
     }
-
     /************************************************* */
-
-
-
-
-
-
     /**
      * 创建或复制元素
-     * @param ElementType 创建类型 
+     * @param ElementType 创建类型
      *  - 如果是元素不会重写节点和样式
      *  - div....
      * @param AddCode 添加代码
-     * @param id 
+     * @param id
      * @param AddSelect 添加到哪里 元素或者元素名
-     * @param options 
+     * @param options
      */
-    function NewElement(ElementType: (Element | "div" | "li" | "i" | "script" | "link" | "p" | "ul" | "a" | "span" | "a" | "img" | string) = "div", AddCode: string = "", id?: string, AddSelect?: Element | string | Node, options?: { style?: string, class?: Array<string> | string, event?: [string, Function] }): Element | undefined {
+    function NewElement(ElementType = "div", AddCode = "", id, AddSelect, options) {
         // 如果传入的是元素则不新建而是复制元素
         const IsElementType = CallType(ElementType).includes('Element');
         // @ts-ignore 允许不重新生产元素
         let NewDoment = IsElementType ? ElementType.cloneNode(true) : document.createElement(ElementType);
         NewDoment.id = id || "";
-        if (!IsElementType) NewDoment.innerHTML = AddCode;
+        if (!IsElementType)
+            NewDoment.innerHTML = AddCode;
         for (const key in options) {
             if (Object.prototype.hasOwnProperty.call(options, key)) {
-                const value = options[key]
+                const value = options[key];
                 //  特殊属性添加  
                 if (!IsElementType && key == "class") {
                     // @ts-ignore 支持数组或者文本
                     NewDoment.className = CallType(options.class.concat) == '[object Array]' ? options.class.join(' ') : options.class;
-                    continue
+                    continue;
                 }
                 if (!IsElementType && key == "style") {
                     if (CallType(value) == '[object Object]') {
-                    } else {
-                        ElementType
+                    }
+                    else {
+                        ElementType;
                         NewDoment.style.cssText = options[key];
                     }
-                    continue
+                    continue;
                 }
                 if (key == "event") {
                     if (value.event) {
-                        NewDoment.addEventListener(value.event, (value.function || value.Function || value.fun || value.Fun))
-                    } else {
-                        NewDoment.addEventListener(value[0], value[1])
+                        NewDoment.addEventListener(value.event, (value.function || value.Function || value.fun || value.Fun));
                     }
-                    continue
+                    else {
+                        NewDoment.addEventListener(value[0], value[1]);
+                    }
+                    continue;
                 }
                 // 添加元素信息
                 NewDoment[key] = options[key];
@@ -239,10 +226,11 @@ setTimeout((function () {
         }
         if (CallType(AddSelect).includes('Element')) {
             // @ts-ignore 支持node元素
-            AddSelect.appendChild(NewDoment)
-        } else if (NewDoment) {
+            AddSelect.appendChild(NewDoment);
+        }
+        else if (NewDoment) {
             // 没有添加位置则返回元素
-            return NewDoment
+            return NewDoment;
         }
         else {
             const Add_To_Select = document.querySelector("" + AddSelect);
@@ -251,40 +239,40 @@ setTimeout((function () {
     }
     /**
      * 循环所有链接创建一个EagleAPi能识别的 URL发送对象
-     * @param ImagesList 
+     * @param ImagesList
      */
-    function ImagesList_To_Eagle_URL_Data(ImagesList: Set<string> | string | Array<string>, AddData?: { name?: string, website?: string, url?: string, tags?: null | Array<string>, annotation?: string, UserName?: string, modificationTime?: number, folderId?: null | string, headers?: string }, folderId?) {
+    function ImagesList_To_Eagle_URL_Data(ImagesList, AddData, folderId) {
         // @ts-ignore  允许文本输入
-        if (CallType(ImagesList).includes('String')) ImagesList = [ImagesList];
+        if (CallType(ImagesList).includes('String'))
+            ImagesList = [ImagesList];
         const data = {
             folderId: (AddData && AddData.folderId || AddData && folderId) || null,
             items: []
-        }
+        };
         let index = 0;
-        ImagesList = RemoveRepeat(ImagesList)
+        ImagesList = RemoveRepeat(ImagesList);
         for (const URLs of ImagesList) {
-            if (!URLs) continue;
-            index += 1
-            data.items.push(Object.assign(
-                {
-                    name: "图片_" + MIU_NUM(index, 2),
-                    url: URLs
-                },
-                // 引用数据插入
-                AddData || {}
-            ))
+            if (!URLs)
+                continue;
+            index += 1;
+            data.items.push(Object.assign({
+                name: "图片_" + MIU_NUM(index, 2),
+                url: URLs
+            }, 
+            // 引用数据插入
+            AddData || {}));
         }
-
         return data;
     }
     /**
      * 通过Vue获取用户可见的图片
-     * @param event 
-     * @param CardMain 
-     * @param Btn 
-     * @returns 
+     * @param event
+     * @param CardMain
+     * @param Btn
+     * @returns
      */
-    function Vue_Get_images(event: Event, CardMain: Element, Btn: Element): { UserName: "", folderId?: "" | null; items: Array<string>; } {
+    function Vue_Get_images(event, CardMain, Btn) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         let imagesList = [];
         let AddData = {
             website: document.URL + "",
@@ -292,114 +280,93 @@ setTimeout((function () {
             annotation: "",
             tags: [],
             UserName: ""
-        }
-
+        };
         // @ts-ignore 尝试从VUE中提取数据
-        if (CardMain.querySelector(".content_row_-r5Tk")?.__vue__) {
-            const Data: {
-                $attrs: {
-                    content: {
-                        pic_infos: {
-                            "0": {
-                                "thumbnail": {
-                                    "url": "",
-                                    "width": 0,
-                                    "height": 0,
-                                    "cut_type": 0,
-                                    "type": null
-                                }
-                            }
-                        },
-                        pic_ids: Array<string>
-                    }
-                }
-            }
-                // @ts-ignore
-                = CardMain.querySelector(".content_row_-r5Tk").__vue__;
+        if ((_a = CardMain.querySelector(".content_row_-r5Tk")) === null || _a === void 0 ? void 0 : _a.__vue__) {
+            const Data = CardMain.querySelector(".content_row_-r5Tk").__vue__;
             // 是否存在这个用户可见对象
-            if (Data?.$attrs?.content?.pic_infos) {
+            if ((_c = (_b = Data === null || Data === void 0 ? void 0 : Data.$attrs) === null || _b === void 0 ? void 0 : _b.content) === null || _c === void 0 ? void 0 : _c.pic_infos) {
                 for (const key in Data.$attrs.content.pic_infos) {
                     // 查找图片数据
                     if (Object.prototype.hasOwnProperty.call(Data.$attrs.content.pic_infos, key)) {
                         const element = Data.$attrs.content.pic_infos[key];
-                        if (!element?.largest?.url) break;
-                        imagesList.push(element.largest.url + "")
+                        if (!((_d = element === null || element === void 0 ? void 0 : element.largest) === null || _d === void 0 ? void 0 : _d.url))
+                            break;
+                        imagesList.push(element.largest.url + "");
                     }
                 }
-                if (Data.$attrs?.content?.pic_ids) {
+                if ((_f = (_e = Data.$attrs) === null || _e === void 0 ? void 0 : _e.content) === null || _f === void 0 ? void 0 : _f.pic_ids) {
                     // 九宫格以外的图
                     for (let index = imagesList.length; index < Data.$attrs.content.pic_ids.length; index++) {
                         const imagids = Data.$attrs.content.pic_ids[index] + "";
                         let NewURL = (imagesList[0] + "").replace(/($.+sinaimg.cn\/[a-z]+\/).+/i, "$1" + imagids + ".jpg");
-                        imagesList.push(NewURL)
+                        imagesList.push(NewURL);
                     }
-
                 }
             }
             //@ts-ignore  用户可见的用户名
-            AddData.UserName = (Data?.$attrs?.content?.user?.screen_name) || "";
+            AddData.UserName = ((_j = (_h = (_g = Data === null || Data === void 0 ? void 0 : Data.$attrs) === null || _g === void 0 ? void 0 : _g.content) === null || _h === void 0 ? void 0 : _h.user) === null || _j === void 0 ? void 0 : _j.screen_name) || "";
             //@ts-ignore  用户可见的描述
-            AddData.annotation = Data?.$attrs?.content?.text || ""
+            AddData.annotation = ((_l = (_k = Data === null || Data === void 0 ? void 0 : Data.$attrs) === null || _k === void 0 ? void 0 : _k.content) === null || _l === void 0 ? void 0 : _l.text) || "";
         }
-        if (AddData.UserName) AddData.tags.push(AddData.UserName);
-        AddData.tags.push("微博采集")
+        if (AddData.UserName)
+            AddData.tags.push(AddData.UserName);
+        AddData.tags.push("微博采集");
         // @ts-ignore 返回数据
-        return Object.assign({ UserName: AddData.UserName }, ImagesList_To_Eagle_URL_Data(imagesList, AddData))
+        return Object.assign({ UserName: AddData.UserName }, ImagesList_To_Eagle_URL_Data(imagesList, AddData));
     }
     /**
      * 向API发起
-     * @param Data 
+     * @param Data
      */
-    function launch(Data: { UserName: "", folderId?: "" | null; items: Array<string>; },Callback?) {
-        if (!Data.items.length) return;
+    function launch(Data, Callback) {
+        if (!Data.items.length)
+            return;
         // @ts-ignore 来自引用Eagle交互脚本.js
         ToEagle.SetNewFolder("来自" + Data.UserName + "的微博").then(EagleinfoData => {
             Data.folderId = EagleinfoData.data.id;
             // @ts-ignore 来自引用Eagle交互脚本.js
             ToEagle.AddImagesURLAll(Data).then(e => {
-                Callback&&Callback()
-            })
+                Callback && Callback();
+            });
         }).catch(err => {
-            alert("无法连接Eagle  请检查是否未打开")
-        })
+            alert("无法连接Eagle  请检查是否未打开");
+        });
     }
     /**
      * 获取和发送图片的主函数
-     * @param event 
-     * @param CardMain 
-     * @param Btn 
+     * @param event
+     * @param CardMain
+     * @param Btn
      */
-    function Btn___GotuEagle__Click(event: Event, CardMain: Element, Btn: Element) {
-         event.stopPropagation();
-         event.preventDefault();
+    function Btn___GotuEagle__Click(event, CardMain, Btn) {
+        event.stopPropagation();
+        event.preventDefault();
         //判断是否允许运行
-        if (!HM.UserAgreement()) return;
+        if (!HM.UserAgreement())
+            return;
         const _Vue = Vue_Get_images(event, CardMain, Btn);
-        if (_Vue.items.length) return launch(_Vue);
+        if (_Vue.items.length)
+            return launch(_Vue);
         // 仅视频
-        if(CardMain.querySelector("video")){
-          return  launch(
-                 // @ts-ignore  直接发送
-                ImagesList_To_Eagle_URL_Data([CardMain.querySelector("video").src], {
-	  // 名称
-                "name":"视频",
-	  // 链接
+        if (CardMain.querySelector("video")) {
+            return launch(
+            // @ts-ignore  直接发送
+            ImagesList_To_Eagle_URL_Data([CardMain.querySelector("video").src], {
+                // 名称
+                "name": "视频",
+                // 链接
                 website: document.URL + "",
-	  // 创建时间
+                // 创建时间
                 modificationTime: +new Date(),
                 // @ts-ignore 描述
-                annotation:CardMain.querySelector(".detail_wbtext_4CRf9").innerText+"",
- 	 // @ts-ignore 标签
-                tags: ["微博采集",CardMain.querySelector(".woo-box-alignCenter.head_nick_1yix2 > a > span").innerText+""],
+                annotation: CardMain.querySelector(".detail_wbtext_4CRf9").innerText + "",
+                // @ts-ignore 标签
+                tags: ["微博采集", CardMain.querySelector(".woo-box-alignCenter.head_nick_1yix2 > a > span").innerText + ""],
                 UserName: "",
-            })
-            )
+            }));
         }
-        
-
     }
-
-
     Main.buttonElement = NewElement(Main.buttonElement, Main.buttonMain, "GotuEagle", null, { class: "woo-box-item-flex toolbar_item_1ky_D", });
     // 开始执行用户可操作功能
     // --------------------------------------------------------------------------------------------
@@ -407,81 +374,74 @@ setTimeout((function () {
      * 执行按钮添加
      */
     function SetButAll() {
+        var _a;
         // 获取所有卡片
-        const domNodeList = document.querySelector(Main.Main)?.querySelectorAll(Main.Card);
-        if (!domNodeList?.length) return;
+        const domNodeList = (_a = document.querySelector(Main.Main)) === null || _a === void 0 ? void 0 : _a.querySelectorAll(Main.Card);
+        if (!(domNodeList === null || domNodeList === void 0 ? void 0 : domNodeList.length))
+            return;
         const domList = [...domNodeList];
         for (const element of domList) {
             // 防止第二次添加
             if (!element['SetGotuEagle'] && !element.querySelector("#GotuEagle")) {
-	//卡片中没有被允许的对象  
-	 if(!element.querySelector(Main.AddSwitch))continue
+                //卡片中没有被允许的对象  
+                if (!element.querySelector(Main.AddSwitch))
+                    continue;
                 NewElement(Main.buttonElement, Main.buttonMain, "GotuEagle", element.querySelector(Main.button), {
                     class: "woo-box-item-flex toolbar_item_1ky_D",
                     // 点击事件
-                    event: ["click", function (event: Event) {
-                        // 事件不再冒泡
-                        event.stopPropagation();
-                        event.preventDefault();
-	         //异步处理了 指针估计会被指向全局需要先储存当前指向
-	         let This=this;
-                       let request= Btn___GotuEagle__Click(event, element, This);
-	  // @ts-ignore 成功后移除按钮      
-	  request.finally&&request.then(function(){This.remove()})
-                    }]
+                    event: ["click", function (event) {
+                            // 事件不再冒泡
+                            event.stopPropagation();
+                            event.preventDefault();
+                            //异步处理了 指针估计会被指向全局需要先储存当前指向
+                            let This = this;
+                            let request = Btn___GotuEagle__Click(event, element, This);
+                            // @ts-ignore 成功后移除按钮      
+                            request.finally && request.then(function () { This.remove(); });
+                        }]
                 });
                 // 防止第二次添加
                 element['SetGotuEagle'] = true;
             }
         }
-
     }
-    SetButAll()  // 执行按钮添加
+    SetButAll(); // 执行按钮添加
     // 防抖节流
     const shake = {
         Data: new Set,
         /**
-         * 到期后自动删除 如果被添加将会返回true  
+         * 到期后自动删除 如果被添加将会返回true
          * - 使用方法： if (shake.isset("scroll", 1500)) return;
          * @param key 防抖的名称
-         * @param time 毫秒 
+         * @param time 毫秒
          * @return {boolean}
          */
-        isset(key: string, time = 1200): boolean {
-            if (this.Data.has(key)) return true;
-            this.Data.add(key)
-            time && setTimeout(this.Data.delete(key), time)
+        isset(key, time = 1200) {
+            if (this.Data.has(key))
+                return true;
+            this.Data.add(key);
+            time && setTimeout(this.Data.delete(key), time);
             return false;
         }
-    }
+    };
     // 控制条事件
     document.addEventListener("scroll", function () {
-       // 用户不同意协议 不再添加按钮
-        if(HM.OFF)return
+        // 用户不同意协议 不再添加按钮
+        if (HM.OFF)
+            return;
         // 1.5秒内只执行一次
-        if (shake.isset("scroll", 1500)) return;
-        SetButAll()
-    })
-
+        if (shake.isset("scroll", 1500))
+            return;
+        SetButAll();
+    });
     // --------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
     //debugger;
     setInterval(function () {
         // @ts-ignore
-        if (!unsafeWindow.HM) return; unsafeWindow.HM = false;
+        if (!unsafeWindow.HM)
+            return;
+        unsafeWindow.HM = false;
         debugger;
         console.log("this=> ", this);
-    }, 1200)
-
-}), 2000)
+    }, 1200);
+}), 2000);
