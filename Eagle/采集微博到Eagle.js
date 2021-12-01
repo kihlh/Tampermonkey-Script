@@ -184,7 +184,7 @@
             SetCollectButton(element);
         }
     }
-    // 防抖节流
+    // 防抖节流 
     const shake = {
         Data:new Set,
         isset(key,time=1200){
